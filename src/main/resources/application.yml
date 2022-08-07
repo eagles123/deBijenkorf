@@ -29,3 +29,8 @@ source-root-irl: http://www.debijenkorf.nl/INTERSHOP/static/WFS/dbk-shop-Site/-/
 spring:
   profiles:
     active: dev
+
+
+logging:
+  file:
+    name: server.log
