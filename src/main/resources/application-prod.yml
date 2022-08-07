@@ -1,31 +1,17 @@
-thumbnail:
-  height: 160
-  width: 180
-  quality: 330
-  scaleType:
-    - Crop
-    - Fill
-    - Skew
-  fillColor: "#24125"
-  imageType:
-    - JPG
-    - PNG
-
-detailLarge:
-  height: 680
-  width: 790
-  quality: 500
-  scaleType:
-    - Crop
-    - Fill
-    - Skew
-  fillColor: null
-  imageType:
-    - JPG
-    - PNG
-
-source-root-irl: http://www.debijenkorf.nl/INTERSHOP/static/WFS/dbk-shop-Site/-/dbk-sh  op/nl_NL/product-images/
-
 spring:
-  profiles:
-  active: dev
+  profiles: prod
+
+  datasource:
+    url: https://10.214.237.70
+    name: devDatabase
+    username: ${ENV_USERNAME}
+    password: ${ENV_PASSWORD}
+
+
+cloud:
+  aws:
+    s3endpoint: https://something.s3.ap-southeast-2.amazonaws.com/file1.txt
+    accesskey: ${ENV_ACCESSKEY}
+    secretkey: ${ENV_SECRETKEY}
+
+

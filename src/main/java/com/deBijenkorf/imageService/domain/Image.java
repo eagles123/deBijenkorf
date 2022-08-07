@@ -1,6 +1,5 @@
 package com.deBijenkorf.imageService.domain;
 
-
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,6 +11,21 @@ public class Image {
     private String imageType;
     private String fillColor;
 
+    @Override
+    public String toString() {
+        return "Image{" +
+                "height=" + height +
+                ", width=" + width +
+                ", quality=" + quality +
+                ", scaleType='" + scaleType + '\'' +
+                ", imageType='" + imageType + '\'' +
+                ", fillColor='" + fillColor + '\'' +
+                '}';
+    }
+
+    public Image(){
+
+    }
 
     public Image(int height, int width, int quality, String scaleType, String imageType, String fillColor) {
         this.height = height;
@@ -20,6 +34,22 @@ public class Image {
         this.scaleType = scaleType;
         this.imageType = imageType;
         this.fillColor = fillColor;
+    }
+
+    public String getScaleType() {
+        return scaleType;
+    }
+
+    public void setScaleType(String scaleType) {
+        this.scaleType = scaleType;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
     }
 
     public int getHeight() {
@@ -44,22 +74,6 @@ public class Image {
 
     public void setQuality(int quality) {
         this.quality = quality;
-    }
-
-    public String getScaleType() {
-        return scaleType;
-    }
-
-    public void setScaleType(String scaleType) {
-        this.scaleType = scaleType;
-    }
-
-    public String getImageType() {
-        return imageType;
-    }
-
-    public void setImageType(String imageType) {
-        this.imageType = imageType;
     }
 
     public String getFillColor() {

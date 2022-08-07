@@ -1,0 +1,31 @@
+thumbnail:
+  height: 160
+  width: 180
+  quality: 330
+  scaleType:
+    - Crop
+    - Fill
+    - Skew
+  fillColor: "#24125"
+  imageType:
+    - JPG
+    - PNG
+
+detailLarge:
+  height: 680
+  width: 790
+  quality: 500
+  scaleType:
+    - Crop
+    - Fill
+    - Skew
+  fillColor: null
+  imageType:
+    - JPG
+    - PNG
+
+source-root-irl: http://www.debijenkorf.nl/INTERSHOP/static/WFS/dbk-shop-Site/-/dbk-sh  op/nl_NL/product-images/
+
+spring:
+  profiles:
+    active: dev

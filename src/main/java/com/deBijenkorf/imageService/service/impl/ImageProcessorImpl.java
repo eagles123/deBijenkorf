@@ -1,18 +1,15 @@
 package com.deBijenkorf.imageService.service.impl;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.deBijenkorf.imageService.domain.Image;
-import com.deBijenkorf.imageService.service.ImageProcess;
+import com.deBijenkorf.imageService.service.ImageProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 @Service
-public class ImageProcessImpl implements ImageProcess {
+public class ImageProcessorImpl implements ImageProcessor {
 
     @Value("${cloud.aws.accesskey}")
     private String accessKey;
@@ -30,84 +27,102 @@ public class ImageProcessImpl implements ImageProcess {
 
 
     @Override
-    public boolean validation(Image image) {
-        //validate the image type, detail omited
-        System.out.println("Validating the data....");
-        return true;
+    public String show(String typeName,String fileName, Image image) throws IOException {
+        String result = "";
+        //construct directory based on file name
+        String optimaizedEndpoint = typeName+"/"+makeDir(fileName);
+        String originalEndpoint = "original"+"/"+makeDir(fileName);
+        //if optimzed image already in S3, return the url
+        if(checkOptmized(optimaizedEndpoint))
+            result = fetchOptimized(optimaizedEndpoint);
+        //if optimized not in S3, check if original is in S3, if it is rezied it and return url
+        else if(checkOrignial(originalEndpoint)){
+            String newFile = reSize(fileName, image);
+            result = storeImage(typeName,newFile);
+
+        }
+        //if both optimized and origianl is not in S3, download it and rezied it and store it to S3
+        else if(!checkOrignial(originalEndpoint)){
+            String downloadFile = downlaodOriginal(fileName);
+            String newFile = reSize(downloadFile, image);
+            result = storeImage(typeName,newFile);
+        }
+        return result;
     }
 
+
     @Override
-    public boolean checkOptmized(String url) {
+    public boolean flushOptimal(String fileName) {
+        boolean success = true;
+        System.out.println("Flusing optimal images" +fileName);
+        return success;
+    }
+    @Override
+    public boolean flushOriginal(String fileName) {
+        boolean success = true;
+        System.out.println("Flusing optimal images"+fileName);
+        return success;
+    }
+
+
+    private boolean checkOptmized(String url) throws FileNotFoundException {
         // can use s3Client to connect to S3 bucket to check if the optimized image exist.
         System.out.println("Searching AWS S3 buket for optimized image");
+        boolean exist = true;
+        if(!exist) throw new FileNotFoundException();
         return true;
     }
 
-    @Override
-    public String fetchOptimized(String url) {
+
+    private String fetchOptimized(String url) {
         // use s3Client to fetch the optimized image url
+        System.out.println("Feching the optimzed image");
         String result = "";
-        result = "https://bucketww2.s3.ap-southeast-2.amazonaws.com/%E7%85%A7%E7%89%87.jpg"; //mocking url
-        return url;//*****
+        result = url; //mocking url
+        return result;//*****
     }
 
-    @Override
-    public boolean checkOrignial(String url) {
+
+    private boolean checkOrignial(String url) {
         //use s3Client to check if the original image exist in the S3 buket
         System.out.println("Searching AWS S3 buket for original image");
         return true;
     }
 
-    @Override
-    public String reSize(String url, Image image) {
+
+    private String reSize(String url, Image image){
         // resize the image using predefined image types
         System.out.println("Re-sizeing using height "+ image.getHeight() + " width " + image.getWidth() + " quality " + image.getQuality());
         String newUrl = url+ image.getScaleType()+image.getFillColor();
+        boolean isSuccessful = true;
+
         return newUrl;
     }
 
-    @Override
-    public boolean storeOptimized(String typeName, String fileName) {
+
+    private String storeImage(String typeName, String fileName) throws IOException {
         boolean success = false;
         String dir = typeName;
-        dir = dir+makeDir(fileName);
+        dir = dir+"/"+ makeDir(fileName);
         System.out.println("Saving image to "+dir);
         success = true; //mock the operation is successful;
-        return success;
+        if(!success) throw new IOException();
+        return dir;
     }
 
-    @Override
-    public boolean storeOriginal(String fileName) {
-        boolean success = false;
-        String dir = "original";// set path for oringinal images
-        dir = dir+makeDir(fileName);
-        System.out.println("Saving orignal images to "+ dir);
-        success = true; //mock the operation is successful;
-        return success;
-    }
 
-    @Override
-    public String fetchOrignal(String fileName) {
-        String result = "https://bucket.s3.ap-southeast-2.amazonaws.com/%E7%85%A7%E7%89%87.jpg"; //mocking url
-        return result;//*****
+    private String downlaodOriginal(String fileName) throws IOException {
+        System.out.println("Downloading original pic to S3 bukcet");
+        boolean urlDown  = false;
+        if(urlDown) throw new FileNotFoundException();
+        return storeImage("original",fileName);
 
     }
 
-    @Override
-    public boolean flushOptimal(String url) {
-        boolean success = true;
-        System.out.println("Flusing optimal images");
-        return success;
-    }
 
-    @Override
-    public boolean flushOriginal(String url) {
-        boolean success = true;
-        System.out.println("Flusing optimal images");
-        return success;
-    }
 
     private String makeDir(String fileName) {
+        System.out.println("Making new dir.....");
         //example: abcdef.jpg or /somedir/anotherdir/abcdef.jpg
         String dir = "";
         int fileLength = fileName.length();
